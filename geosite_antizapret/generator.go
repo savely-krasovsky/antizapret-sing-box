@@ -145,6 +145,10 @@ func (g *Generator) GenerateAndUpload(ctx context.Context) error {
 		return fmt.Errorf("cannot generate: %w", err)
 	}
 
+	if _, err := geositeFile.Seek(0, io.SeekStart); err != nil {
+		return fmt.Errorf("failed to seek: %w", err)
+	}
+
 	geositeFileHashSumFile, err := os.CreateTemp("", "geosite_antizapret")
 	if err != nil {
 		return fmt.Errorf("cannot create temp file: %w", err)
@@ -152,6 +156,10 @@ func (g *Generator) GenerateAndUpload(ctx context.Context) error {
 	defer geositeFileHashSumFile.Close()
 	if _, err := geositeFileHashSumFile.Write([]byte(hex.EncodeToString(hasher.Sum(nil)) + "  geosite.db\n")); err != nil {
 		return err
+	}
+
+	if _, err := geositeFileHashSumFile.Seek(0, io.SeekStart); err != nil {
+		return fmt.Errorf("failed to seek: %w", err)
 	}
 
 	tagName := time.Now().Format("20060102150405")
