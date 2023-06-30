@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/google/go-github/v53 v53.2.0
+	github.com/maxmind/mmdbwriter v0.0.0-20230619164437-bb691ac3530c
 	github.com/sagernet/sing-box v1.3.0
 	golang.org/x/text v0.10.0
 )
@@ -14,7 +15,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/maxmind/mmdbwriter v0.0.0-20230619164437-bb691ac3530c // indirect
 	github.com/miekg/dns v1.1.55 // indirect
 	github.com/oschwald/maxminddb-golang v1.11.0 // indirect
 	github.com/sagernet/sing v0.2.7 // indirect
