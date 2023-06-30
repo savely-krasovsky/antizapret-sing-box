@@ -12,13 +12,15 @@ func main() {
 		output string
 	)
 
-	flag.StringVar(&output, "output", "", "Output file name")
-	generator := geosite_antizapret.NewGenerator()
+	flag.StringVar(&output, "output", "", "Output path")
+	flag.Parse()
 
 	if output == "" {
-		fmt.Println("Provide a name of file!")
+		fmt.Println("Provide path to file!")
 		return
 	}
+
+	generator := geosite_antizapret.NewGenerator()
 
 	if err := generator.GenerateAndWrite(output); err != nil {
 		log.Fatal(err)
