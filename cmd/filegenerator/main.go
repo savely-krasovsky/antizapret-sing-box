@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/L11R/antizapret-sing-geosite/geosite_antizapret"
 	"log"
+
+	"github.com/L11R/antizapret-sing-geosite/geosite_antizapret"
 )
 
 func main() {
@@ -13,14 +14,16 @@ func main() {
 	)
 
 	flag.StringVar(&output, "output", "", "Output file name")
-	generator := geosite_antizapret.NewGenerator()
+	flag.Parse()
 
 	if output == "" {
 		fmt.Println("Provide a name of file!")
 		return
 	}
 
-	if err := generator.GenerateAndWrite(output); err != nil {
+	generator := geosite_antizapret.NewGenerator()
+
+	if err := generator.GenerateAndWrite(); err != nil {
 		log.Fatal(err)
 	}
 }
