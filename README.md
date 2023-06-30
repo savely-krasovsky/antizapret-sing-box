@@ -1,4 +1,4 @@
-# List of domain blocked in Russia in geosite form
+# Lists of domain and IPs blocked in Russia in geosite and geoip form
 
 It allows to create rules and unblock only necessary sites.
 
@@ -7,9 +7,9 @@ to get the latest dumps from [Roskomnadzor](https://en.wikipedia.org/wiki/Roskom
 
 Project currently consists from two utilities:
 
-- `filegenerator` -- simple utility to generate `geosite.db` files from CSV dump.
+- `filegenerator` -- simple utility to generate `geoip.db` and `geosite.db` files from CSV dump.
 - `githubreleaser` -- utility to create release and upload assets.
 
-You can download the latest `geosite.db` here:
+You can download the latest `geoip.db` and `geosite.db` here:
+- https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/geoip.db
 - https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/geosite.db
-- https://cdn.jsdelivr.net/gh/L11R/antizapret-sing-geosite@release/geosite.db
