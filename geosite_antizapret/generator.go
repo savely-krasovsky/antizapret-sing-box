@@ -1,7 +1,6 @@
 package geosite_antizapret
 
 import (
-	"bufio"
 	"context"
 	"crypto/sha256"
 	"encoding/csv"
@@ -77,9 +76,6 @@ func (g *Generator) generate(in io.Reader, outSites, outIPs io.Writer) error {
 		return fmt.Errorf("cannot fetch antizapret configs: %w", err)
 	}
 
-	// skip first line
-	bufio.NewScanner(in).Scan()
-
 	// create csv reader with CP1251 decoder
 	r := csv.NewReader(charmap.Windows1251.NewDecoder().Reader(in))
 	r.Comma = ';'
@@ -101,6 +97,10 @@ func (g *Generator) generate(in io.Reader, outSites, outIPs io.Writer) error {
 		}
 		if err != nil {
 			return fmt.Errorf("cannot parse csv file: %w", err)
+		}
+
+		if len(rec) == 1 {
+			continue
 		}
 
 		{
