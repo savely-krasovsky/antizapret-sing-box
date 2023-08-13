@@ -100,6 +100,7 @@ func (g *Generator) generate(in io.Reader, outSites, outIPs io.Writer) error {
 		}
 
 		if len(rec) == 1 {
+			r.FieldsPerRecord = 6
 			continue
 		}
 
