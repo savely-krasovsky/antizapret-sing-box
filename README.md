@@ -3,7 +3,7 @@
 It allows to create rules and unblock only necessary sites:
 
 1. Set default outbound to `bypass`.
-2. Proxify IPs with `geoip:antizapret` and sites with `geosites:antizapret`.
+2. Proxify IPs with `geoip:antizapret` and sites with `geosite:antizapret`.
 
 This project uses [zapret-info/z-i](https://github.com/zapret-info/z-i) repo
 to get the latest dumps from [Roskomnadzor](https://en.wikipedia.org/wiki/Roskomnadzor).
