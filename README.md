@@ -21,3 +21,89 @@ You can download the latest `antizapret.srs`, `geoip.db` and `geosite.db` here:
 - https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/antizapret.srs
 - https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/geoip.db
 - https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/geosite.db
+
+## Example
+
+Below is the example of configuration using WireGuard outbound
+(you can easily switch it to Shadowsocks or everything else sing-box supports) and AgGuard Home DNS.
+
+```json
+{
+  "log": {
+    "level": "warn"
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "adguard-home-dns",
+        "address": "https://REDACTED/dns-query/singbox",
+        "address_resolver": "yandex-dns",
+        "detour": "direct-out"
+      },
+      {
+        "tag": "yandex-dns",
+        "address": "77.88.8.8",
+        "detour": "direct-out"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "inet4_address": "172.16.0.1/30",
+      "auto_route": true,
+      "sniff": true
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct-out"
+    },
+    {
+      "type": "wireguard",
+      "tag": "wireguard-out",
+      "server": "REDACTED",
+      "server_port": 51820,
+      "system_interface": true,
+      "local_address": [
+        "10.252.0.1/32",
+        "2600:xxxx:xxxx:cafe::1/128"
+      ],
+      "private_key": "REDACTED",
+      "peer_public_key": "REDACTED",
+      "pre_shared_key": "REDACTED"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "rule_set": "antizapret",
+        "outbound": "wireguard-out"
+      },
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "antizapret",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/antizapret.srs",
+        "download_detour": "proxy"
+      }
+    ]
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    }
+  }
+}
+```
