@@ -25,7 +25,8 @@ You can download the latest `antizapret.srs`, `geoip.db` and `geosite.db` here:
 ## Example
 
 Below is the example of configuration using WireGuard outbound
-(you can easily switch it to Shadowsocks or everything else sing-box supports) and AgGuard Home DNS.
+(you can easily switch it to Shadowsocks or everything else sing-box supports) and encrypted AdGuard DNS
+(which will work over WireGuard to block ads and trackers while connected).
 
 ```json
 {
@@ -35,15 +36,21 @@ Below is the example of configuration using WireGuard outbound
   "dns": {
     "servers": [
       {
-        "tag": "adguard-home-dns",
-        "address": "https://REDACTED/dns-query/singbox",
-        "address_resolver": "yandex-dns",
-        "detour": "direct-out"
+        "tag": "adguard-dns",
+        "address": "tls://dns.adguard-dns.com",
+        "address_resolver": "local-dns",
+        "detour": "wireguard-out"
       },
       {
-        "tag": "yandex-dns",
-        "address": "77.88.8.8",
+        "tag": "local-dns",
+        "address": "local",
         "detour": "direct-out"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local-dns"
       }
     ]
   },
@@ -52,6 +59,7 @@ Below is the example of configuration using WireGuard outbound
       "type": "tun",
       "inet4_address": "172.16.0.1/30",
       "auto_route": true,
+      "strict_route": true,
       "sniff": true
     }
   ],
@@ -96,7 +104,7 @@ Below is the example of configuration using WireGuard outbound
         "type": "remote",
         "format": "binary",
         "url": "https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/antizapret.srs",
-        "download_detour": "proxy"
+        "download_detour": "wireguard-out"
       }
     ]
   },
