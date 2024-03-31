@@ -106,7 +106,8 @@ Below is the example of configuration using WireGuard outbound
         "url": "https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/antizapret.srs",
         "download_detour": "wireguard-out"
       }
-    ]
+    ],
+    "auto_detect_interface": true
   },
   "experimental": {
     "cache_file": {
