@@ -18,9 +18,11 @@ Project currently consists from two utilities:
 - `githubreleaser` -- utility to create release and upload assets.
 
 You can download the latest `antizapret.srs`, `geoip.db` and `geosite.db` here:
-- https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/antizapret.srs
-- https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/geoip.db
-- https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/geosite.db
+- https://github.com/savely-krasovsky/antizapret-sing-geosite/releases/latest/download/antizapret.srs
+- https://github.com/savely-krasovsky/antizapret-sing-geosite/releases/latest/download/geoip.db
+- https://github.com/savely-krasovsky/antizapret-sing-geosite/releases/latest/download/geosite.db
+
+**UPD.** Sorry, around April 6 2024 the links broke, I restored them today, April 12.
 
 ## Example
 
@@ -103,7 +105,7 @@ Below is the example of configuration using WireGuard outbound
         "tag": "antizapret",
         "type": "remote",
         "format": "binary",
-        "url": "https://github.com/L11R/antizapret-sing-geosite/releases/latest/download/antizapret.srs",
+        "url": "https://github.com/savely-krasovsky/antizapret-sing-geosite/releases/latest/download/antizapret.srs",
         "download_detour": "wireguard-out"
       }
     ],
