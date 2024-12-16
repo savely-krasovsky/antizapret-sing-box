@@ -1,6 +1,7 @@
 package geosite_antizapret
 
 import (
+	"compress/gzip"
 	"context"
 	"crypto/sha256"
 	"encoding/csv"
@@ -27,7 +28,7 @@ import (
 	"golang.org/x/text/encoding/charmap"
 )
 
-const DefaultDownloadURL = "https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv"
+const DefaultDownloadURL = "https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv.gz"
 
 type Generator struct {
 	downloadURL string
@@ -280,6 +281,12 @@ func (g *Generator) GenerateAndWrite() error {
 	}
 	defer resp.Body.Close()
 
+	body, err := gzip.NewReader(resp.Body)
+	if err != nil {
+		return fmt.Errorf("cannot decode gziped dump from github: %w", err)
+	}
+	defer body.Close()
+
 	outSites, err := os.Create("geosite.db")
 	if err != nil {
 		return fmt.Errorf("cannot create geosite file: %w", err)
@@ -304,7 +311,7 @@ func (g *Generator) GenerateAndWrite() error {
 	}
 	defer outRuleSetBinary.Close()
 
-	if err := g.generate(resp.Body, outSites, outIPs, outRuleSetJSON, outRuleSetBinary); err != nil {
+	if err := g.generate(body, outSites, outIPs, outRuleSetJSON, outRuleSetBinary); err != nil {
 		return fmt.Errorf("cannot generate: %w", err)
 	}
 
@@ -321,6 +328,12 @@ func (g *Generator) GenerateAndUpload(ctx context.Context) error {
 		return fmt.Errorf("cannot get dump from github: %w", err)
 	}
 	defer resp.Body.Close()
+
+	body, err := gzip.NewReader(resp.Body)
+	if err != nil {
+		return fmt.Errorf("cannot decode gziped dump from github: %w", err)
+	}
+	defer body.Close()
 
 	geositeFile, err := os.CreateTemp("", "geosite_antizapret")
 	if err != nil {
@@ -352,7 +365,7 @@ func (g *Generator) GenerateAndUpload(ctx context.Context) error {
 	ruleSetBinaryHasher := sha256.New()
 
 	if err := g.generate(
-		resp.Body,
+		body,
 		io.MultiWriter(geositeHasher, geositeFile),
 		io.MultiWriter(geoipHasher, geoipFile),
 		io.MultiWriter(ruleSetJSONHasher, ruleSetJSONFile),
