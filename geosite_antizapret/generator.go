@@ -18,13 +18,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v67/github"
 	"github.com/maxmind/mmdbwriter"
 	"github.com/maxmind/mmdbwriter/mmdbtype"
 	"github.com/sagernet/sing-box/common/geosite"
 	"github.com/sagernet/sing-box/common/srs"
 	"github.com/sagernet/sing-box/constant"
 	"github.com/sagernet/sing-box/option"
+	"github.com/sagernet/sing/common/varbin"
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -75,7 +76,20 @@ func NewGenerator(opts ...GeneratorOption) *Generator {
 	return g
 }
 
-func (g *Generator) generate(in io.Reader, outSites, outIPs, outRuleSetJSON, outRuleSetBinary io.Writer) error {
+type fileVarbinWriter struct {
+	w io.Writer
+}
+
+func (f *fileVarbinWriter) Write(b []byte) (n int, err error) {
+	return f.w.Write(b)
+}
+
+func (f *fileVarbinWriter) WriteByte(c byte) (err error) {
+	_, err = f.w.Write([]byte{c})
+	return
+}
+
+func (g *Generator) generate(in io.Reader, outSites varbin.Writer, outIPs, outRuleSetJSON, outRuleSetBinary io.Writer) error {
 	antizapretConfigs, err := g.fetchAntizapretConfigs()
 	if err != nil {
 		return fmt.Errorf("cannot fetch antizapret configs: %w", err)
@@ -266,8 +280,11 @@ func (g *Generator) generate(in io.Reader, outSites, outIPs, outRuleSetJSON, out
 		return fmt.Errorf("cannot write into antizapret-ruleset.json file: %w", err)
 	}
 
-	plainRuleSet := ruleSet.Upgrade()
-	if err := srs.Write(outRuleSetBinary, plainRuleSet); err != nil {
+	plainRuleSet, err := ruleSet.Upgrade()
+	if err != nil {
+		return fmt.Errorf("cannot upgrade ruleset: %w", err)
+	}
+	if err := srs.Write(outRuleSetBinary, plainRuleSet, 1); err != nil {
 		return fmt.Errorf("cannot write into antizapret.srs file: %w", err)
 	}
 
@@ -292,6 +309,9 @@ func (g *Generator) GenerateAndWrite() error {
 		return fmt.Errorf("cannot create geosite file: %w", err)
 	}
 	defer outSites.Close()
+	outSitesVarbin := &fileVarbinWriter{
+		w: outSites,
+	}
 
 	outIPs, err := os.Create("geoip.db")
 	if err != nil {
@@ -311,7 +331,7 @@ func (g *Generator) GenerateAndWrite() error {
 	}
 	defer outRuleSetBinary.Close()
 
-	if err := g.generate(body, outSites, outIPs, outRuleSetJSON, outRuleSetBinary); err != nil {
+	if err := g.generate(body, outSitesVarbin, outIPs, outRuleSetJSON, outRuleSetBinary); err != nil {
 		return fmt.Errorf("cannot generate: %w", err)
 	}
 
@@ -364,9 +384,13 @@ func (g *Generator) GenerateAndUpload(ctx context.Context) error {
 	ruleSetJSONHasher := sha256.New()
 	ruleSetBinaryHasher := sha256.New()
 
+	geositeVarbin := &fileVarbinWriter{
+		w: io.MultiWriter(geositeHasher, geositeFile),
+	}
+
 	if err := g.generate(
 		body,
-		io.MultiWriter(geositeHasher, geositeFile),
+		geositeVarbin,
 		io.MultiWriter(geoipHasher, geoipFile),
 		io.MultiWriter(ruleSetJSONHasher, ruleSetJSONFile),
 		io.MultiWriter(ruleSetBinaryHasher, ruleSetBinaryFile),
