@@ -22,7 +22,11 @@ You can download the latest `antizapret.srs`, `geoip.db` and `geosite.db` here:
 - https://github.com/savely-krasovsky/antizapret-sing-box/releases/latest/download/geoip.db
 - https://github.com/savely-krasovsky/antizapret-sing-box/releases/latest/download/geosite.db
 
-**UPD.** Sorry, around April 6 2024 the links broke, I restored them today, April 12.
+Links without redirects behind Cloudflare:
+- https://krasovs.ky/sing-box/antizapret.srs
+- https://krasovs.ky/sing-box/antizapret-ruleset.json
+- https://krasovs.ky/sing-box/geoip.db
+- https://krasovs.ky/sing-box/geosite.db
 
 ## Example
 
