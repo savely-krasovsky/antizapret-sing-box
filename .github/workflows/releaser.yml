@@ -1,0 +1,23 @@
+name: Releaser
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+      - name: Build releaser
+        run: go build -v -o ./githubreleaser ./cmd/githubreleaser
+      - name: Release
+        run: |
+          ./githubreleaser -owner ${GITHUB_REPOSITORY_OWNER} \
+          -repo ${{ github.event.repository.name }} \
+          -token ${{ secrets.GITHUB_TOKEN }}
