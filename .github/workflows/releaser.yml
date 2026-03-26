@@ -2,8 +2,9 @@ name: Releaser
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
+  # temporary (?) disable scheduled job
+  #schedule:
+  #  - cron: "0 0 * * *"
 
 permissions:
   contents: write
